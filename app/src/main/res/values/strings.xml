@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">UnStack</string>
+    <string name="title_activity_supplier_map">SupplierMap</string>
+    <string name="maps_key">AIzaSyDzHdtdzZgXaMNeRKHMFii4wBYuW0JL3D8</string>
+</resources>

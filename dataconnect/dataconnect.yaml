@@ -1,0 +1,13 @@
+specVersion: "v1"
+serviceId: "unstack-32125-2-service"
+location: "us-east4"
+schemas:
+  - source: "./schema"
+    datasource:
+      postgresql:
+        database: "unstack-32125-2-database"
+        cloudSql:
+          instanceId: "unstack-32125-instance"
+          # schemaValidation: "STRICT"     # STRICT mode makes Postgres schema match Data Connect exactly.
+          # schemaValidation: "COMPATIBLE" # COMPATIBLE mode makes Postgres schema compatible with Data Connect.
+connectorDirs: ["./example"]

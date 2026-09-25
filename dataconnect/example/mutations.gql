@@ -1,0 +1,100 @@
+#I need a mutation that adds a supplier to the DB
+mutation CreateSupplier($name: String!, $address: String!) @auth(level: USER) {
+  supplier_insert(data: {
+    name: $name,
+    address: $address
+  })
+}
+
+#I need a mutation that adds an item to the DB
+mutation AddItemToDB($name: String!, $supplierId: UUID!, $cost: Float!, $curQuant: Int!, $par: Int!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  item_insert(data: {
+    name: $name,
+    supplierId: $supplierId,
+    cost: $cost,
+    curQuant: $curQuant,
+    par: $par
+  })
+}
+
+#i need a mutation to add a user. Their default role will alwaus be employee
+mutation AddUser($firstName: String!, $lastName: String!, $email: String!) @auth(level: USER, insecureReason: "This mutation inserts a new user with default role and uses auth.uid for the user ID, which is secure.") {
+  appUser_upsert(
+    data: {
+      uid_expr: "auth.uid",
+      firstName: $firstName,
+      lastName: $lastName,
+      email: $email,
+      role: EMPLOYEE
+    }
+  )
+}
+
+#I want to be able to add a user with an ID that is differnet from teh logged in user
+mutation AddUserWithProvidedID($uid: String!, $firstName: String!, $lastName: String!, $email: String!) @auth(level: USER) {
+  appUser_insert(data: {
+    uid: $uid,
+    firstName: $firstName,
+    lastName: $lastName,
+    email: $email,
+    role: EMPLOYEE
+  })
+}
+
+#I need an operation that adds an item and a new supplier. The item needs the supplier's ID
+mutation AddItemAndSupplier($itemName: String!, $itemCost: Float!, $itemCurQuant: Int!, $itemPar: Int!, $supplierName: String!, $supplierAddress: String!) @auth(level: USER) {
+  addSupplier: supplier_insert(data: {name: $supplierName, address: $supplierAddress})
+  addItem: item_insert(data: {name: $itemName, cost: $itemCost, curQuant: $itemCurQuant, par: $itemPar, supplierId_expr: "response.addSupplier.id"})
+}
+
+#I need a mutation to delete all of the data to reseed
+mutation DeleteAllData @transaction @auth(level: USER, insecureReason: "This operation is for administrative purposes and will delete all data. It requires a logged-in user to prevent accidental deletion by unauthorized parties.") {
+  item_deleteMany(all: true)
+  supplier_deleteMany(all: true)
+  appUser_deleteMany(all: true)
+}
+
+#Update a given item's current quantity only
+mutation UpdateItemCurrentQuantity($itemId: UUID!, $newCurQuant: Int!)
+@auth(level: USER, insecureReason: "This operation updates an item's quantity and requires user authentication.") {
+  item_update(
+    key: { id: $itemId },
+    data: { curQuant: $newCurQuant }
+  )
+}
+
+#a mutation to update the following fields of an item: supplier, quantity, par, price 
+mutation UpdateItem(
+  $id: UUID!,
+  $supplierId: UUID!,
+  $curQuant: Int!,
+  $par: Int!,
+  $cost: Float!
+)
+@auth(level: USER, insecureReason: "This operation updates an item and requires user authentication.") {
+  item_update(
+    key: { id: $id }
+    data: {
+      supplierId: $supplierId,
+      curQuant: $curQuant,
+      par: $par,
+      cost: $cost
+    }
+  )
+}
+
+#add a request
+mutation AddRequest($itemId: UUID!, $supplierId: UUID!, $dateRequested: Timestamp!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  request_insert(
+    data: {
+      itemId: $itemId,
+      supplierId: $supplierId,
+      dateRequested: $dateRequested
+    }
+  )
+}
+
+#delete a request by id
+mutation DeleteRequestById($id: UUID!) @auth(level: USER, insecureReason: "This operation deletes a specific request, which is intended behavior for authenticated users.") {
+  request_delete(id: $id)
+}

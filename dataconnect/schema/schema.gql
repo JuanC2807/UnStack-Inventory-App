@@ -1,0 +1,34 @@
+enum UserRole {
+  MANAGER
+  EMPLOYEE
+}
+
+type AppUser @table(key: "uid") {
+  uid: String! @default(expr: "auth.uid")
+  firstName: String!
+  lastName: String!
+  email: String! @unique
+  role: UserRole!
+}
+
+type Supplier @table(key: "id") {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String! 
+  address: String! @unique
+}
+
+type Item @table(key: "id") {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String! @unique
+  supplier: Supplier!
+  cost: Float!
+  curQuant: Int!
+  par: Int!
+}
+
+type Request @table(key: "id") {
+  id: UUID! @default(expr: "uuidV4()")
+  item: Item!
+  supplier: Supplier!
+  dateRequested: Timestamp!
+}

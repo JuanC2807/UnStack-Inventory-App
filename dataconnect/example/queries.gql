@@ -1,0 +1,120 @@
+# List all items sorted by supplier name
+query ListItemsBySupplier @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  items(orderBy: [{ supplier: { name: ASC } }]) {
+    id
+    name
+    cost
+    curQuant
+    par
+    supplier {
+      name
+      id
+    }
+  }
+}
+
+# Get user by UID
+query GetUser($uid: String!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users."){
+  appUser(key: { uid: $uid }) {
+    uid
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+# Get user by email
+query GetUserByEmail($email: String!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  appUsers(where: { email: { eq: $email } }) {
+    uid
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+# Get users by role
+query GetUsersByRole($role: UserRole!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users."){
+  appUsers(where: { role: { eq: $role } }) {
+    uid
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+# Get items by supplier
+query GetItemsBySupplier($supplierId: UUID!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users."){
+  items(where: { supplierId: { eq: $supplierId } }) {
+    id
+    name
+    cost
+    curQuant
+    par
+    supplier {
+      id
+      name
+    }
+  }
+}
+
+#get item by item id
+query GetItem($itemId: UUID!) @auth(level: USER, insecureReason: "Its just an item bro") {
+  item(id: $itemId) {
+    id
+    name
+    cost
+    curQuant
+    par
+    supplier {
+      id
+      name
+    }
+  }
+}
+
+#get supplier by their id
+query GetSupplierById($id: UUID!) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  supplier(id: $id) {
+    id
+    name
+    address
+  }
+}
+
+#write a query that obtains all of the suppliers
+query ListAllSuppliers @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  suppliers {
+    id
+    name
+    address
+  }
+}
+
+#list all requests
+query ListAllRequests @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  requests {
+    id
+    item {
+      id
+      name
+      cost
+      curQuant
+      par
+      supplier {
+        id
+        name
+        address
+      }
+    }
+    supplier {
+      id
+      name
+      address
+    }
+    dateRequested
+  }
+}

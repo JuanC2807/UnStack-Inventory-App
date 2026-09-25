@@ -1,0 +1,35 @@
+# Android / Gradle
+.gradle/
+build/
+app/build/
+local.properties
+*.iml
+
+# Android Studio / IDE
+.idea/
+.vscode/
+
+# Firebase local/generated state
+.firebase/
+.gemini/
+app/google-services.json
+
+# Firebase Data Connect generated state
+dataconnect/.dataconnect/
+
+# Logs
+*.log
+pglite-debug.log
+
+# macOS
+.DS_Store
+
+# Native build output
+.externalNativeBuild/
+.cxx/
+
+# Captures
+captures/
+
+# Backup files
+*~
